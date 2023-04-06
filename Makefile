@@ -1,31 +1,32 @@
-TARGET = carrot
+PROJECT = carrot
 CC = g++
+SOURCES = main.cpp
 PREF_BIN = ./bin
+PREF_OBJ = $(PREF_BIN)/obj
+PREF_DEBUG = $(PREF_BIN)/debug
 
-maHEADERS = program.h headers.h
-OBJECTS = program.o
+OBJ = $(PREF_OBJ)/$(patsubst %.cpp,%.o, $(SOURCES))
+TARGET = $(PREF_DEBUG)/$(PROJECT).sh
 
-SOURCES = main.c
-OBJ = $(PREF_BIN)/$(patsubst %.c,%.o, $(SOURCES))
-
-all: $(PREF_BIN) $(TARGET)
+all: $(PREF_BIN) $(PREF_OBJ) $(PREF_DEBUG) $(TARGET)
 
 $(PREF_BIN):
 	mkdir -p $(PREF_BIN)
 
+$(PREF_OBJ):
+	mkdir -p $(PREF_OBJ)
+
+$(PREF_DEBUG):
+	mkdir -p $(PREF_DEBUG)
+
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
-	
-$(OBJ):
-	$(CC) -c main.cpp -o bin/main.o
 
+$(OBJ): $(SOURCES)
+	$(CC) -c $< -o $@
 
-clean :
+clean:
 	rm -f -r $(PREF_BIN)
-	
-	
-#rm -f -r $(BIN_DIR)
-	
 	
 	
 
