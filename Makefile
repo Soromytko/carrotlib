@@ -1,35 +1,33 @@
 PROJECT = carrot
 CC = g++
-SOURCES = main.cpp
-PREF_BIN = ./bin
-PREF_OBJ = $(PREF_BIN)/obj
-PREF_DEBUG = $(PREF_BIN)/debug
+LDFLAGS = -L/usr/X11R6/lib
+LDFLAGS += -lX11
 
-OBJ = $(PREF_OBJ)/$(patsubst %.cpp,%.o, $(SOURCES))
-TARGET = $(PREF_DEBUG)/$(PROJECT).sh
+SRC_DIR := ./src
+BIN_DIR := ./bin
+OBJ_DIR := $(BIN_DIR)/obj
+DEBUG_DIR := $(BIN_DIR)/debug
+SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
+TARGET = $(DEBUG_DIR)/$(PROJECT).sh
 
-all: $(PREF_BIN) $(PREF_OBJ) $(PREF_DEBUG) $(TARGET)
+all: $(BIN_DIR) $(OBJ_DIR) $(DEBUG_DIR) $(TARGET)
 
-$(PREF_BIN):
-	mkdir -p $(PREF_BIN)
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 
-$(PREF_OBJ):
-	mkdir -p $(PREF_OBJ)
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
-$(PREF_DEBUG):
-	mkdir -p $(PREF_DEBUG)
+$(DEBUG_DIR):
+	mkdir -p $(DEBUG_DIR)
 
-$(TARGET): $(OBJ)
-	$(CC) $(OBJ) -o $(TARGET)
+$(TARGET): $(OBJ_FILES)
+	$(CC) $^ $(LDFLAGS) -o $@ 
 
-$(OBJ): $(SOURCES)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@
 
 clean:
-	rm -f -r $(PREF_BIN)
-	
-	
+	rm -f -r $(BIN_DIR)
 
-
-# SRC = $(wildcard *.c) # get all .c files
-# OBJ = $(patsubst %.c, %.o, $(SRC)) # get all .c files, add .o
